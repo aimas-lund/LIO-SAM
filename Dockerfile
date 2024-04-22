@@ -44,7 +44,7 @@ SHELL ["/bin/bash", "-c"]
 # clone and install LIO-SAM
 RUN mkdir -p /home/$USERNAME/ros2_ws/src \
     && cd /home/$USERNAME/ros2_ws/src \
-    && git clone --branch ros2 https://github.com/aimas-lund/LIO-SAM \
+    && git clone --branch feature/ros2-thesis-mods https://github.com/aimas-lund/LIO-SAM \
     && cd .. \
     && source /opt/ros/humble/setup.bash \
     && colcon build
