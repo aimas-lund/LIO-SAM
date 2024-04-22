@@ -1,5 +1,19 @@
 FROM osrf/ros:humble-desktop-full-jammy
 
+ARG USERNAME=liosamuser
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+
+# Enable ability for ROS messages to be viewable from host 
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
+    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
+    && apt-get update \
+    && apt-get install -y sudo \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME
+
+# install ros2 dependencies
 RUN apt-get update \
     && apt-get install -y curl \
     && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - \
@@ -12,8 +26,11 @@ RUN apt-get update \
   	&& apt install -y ros-humble-pcl-msgs \
   	&& apt install -y ros-humble-vision-opencv \
   	&& apt install -y ros-humble-xacro \
+    && apt-get install -y ros-humble-rosbag2-storage-mcap \
+    && apt-get install -y ros-humble-nmea-msgs \
     && rm -rf /var/lib/apt/lists/*
 
+# install gtsam (LIO-SAM dependency)
 RUN apt-get update \
     && apt install -y software-properties-common \
     && add-apt-repository -y ppa:borglab/gtsam-release-4.1 \
@@ -21,16 +38,20 @@ RUN apt-get update \
     && apt install -y libgtsam-dev libgtsam-unstable-dev \
     && rm -rf /var/lib/apt/lists/*
 
+USER $USERNAME
 SHELL ["/bin/bash", "-c"]
 
-RUN mkdir -p ~/ros2_ws/src \
-    && cd ~/ros2_ws/src \
-    && git clone --branch ros2 https://github.com/TixiaoShan/LIO-SAM.git \
+# clone and install LIO-SAM
+RUN mkdir -p /home/$USERNAME/ros2_ws/src \
+    && cd /home/$USERNAME/ros2_ws/src \
+    && git clone --branch ros2 https://github.com/aimas-lund/LIO-SAM \
     && cd .. \
     && source /opt/ros/humble/setup.bash \
     && colcon build
 
-RUN echo "source /opt/ros/humble/setup.bash" >> /root/.bashrc \
-    && echo "source /root/ros2_ws/install/setup.bash" >> /root/.bashrc
+# add ros2 and LIO-SAM to bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USERNAME/.bashrc \
+    && echo "source /home/$USERNAME/ros2_ws/install/setup.bash" >> /home/$USERNAME/.bashrc \
+    && echo "export ROS_DOMAIN_ID=1" >> /home/$USERNAME/.bashrc
 
-WORKDIR /root/ros2_ws
+WORKDIR /home/$USERNAME/ros2_ws
