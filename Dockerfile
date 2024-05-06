@@ -18,6 +18,7 @@ RUN apt-get update \
     && apt-get install -y curl \
     && curl -s https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - \
     && apt-get update \
+    && apt install gdb -y \
     && apt install -y python3-colcon-common-extensions \
     && apt-get install -y ros-humble-navigation2 \
     && apt-get install -y ros-humble-robot-localization \
@@ -47,7 +48,8 @@ RUN mkdir -p /home/$USERNAME/ros2_ws/src \
     && git clone --branch feature/ros2-thesis-mods https://github.com/aimas-lund/LIO-SAM \
     && cd .. \
     && source /opt/ros/humble/setup.bash \
-    && colcon build
+    # && colcon build
+    && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Debug
 
 # add ros2 and LIO-SAM to bashrc
 RUN echo "source /opt/ros/humble/setup.bash" >> /home/$USERNAME/.bashrc \
