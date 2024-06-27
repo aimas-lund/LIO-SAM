@@ -17,8 +17,8 @@
     # GPS Settings
     useImuHeadingInitialization: true           # if using GPS data, set to "true"
     useGpsElevation: false                       # if GPS elevation is bad, set to "false"
-    gpsCovThreshold: 2.0                         # m^2, threshold for using GPS data
-    poseCovThreshold: 25.0                       # m^2, threshold for using GPS data
+    gpsCovThreshold: 9.0                         # m^2, threshold for using GPS data
+    poseCovThreshold: 9.0                       # m^2, threshold for using GPS data
 
     # Export settings
     savePCD: false                               # https://github.com/TixiaoShan/LIO-SAM/issues/3
@@ -32,7 +32,7 @@
     Horizon_SCAN: 1024   
     downsampleRate: 1                            # default: 1. Downsample your data if too many
     # points. i.e., 16 = 64 / 4, 16 = 16 / 1
-    lidarMinRange: 1.5                           # default: 1.0, minimum lidar range to be used
+    lidarMinRange: 1.0                           # default: 1.0, minimum lidar range to be used
     lidarMaxRange: 200.0                        # default: 1000.0, maximum lidar range to be used
 
     # IMU Settings
@@ -41,7 +41,7 @@
     imuAccBiasN: 6.4356659353532566e-05
     imuGyrBiasN: 3.5640318696367613e-05
 
-    imuGravity: 9.80511
+    imuGravity: 9.81511
     imuRPYWeight: 0.01
 
     extrinsicTrans:  [ 0.0,  0.0,  0.0 ]
@@ -55,8 +55,8 @@
     # LOAM feature threshold
     edgeThreshold: 1.0
     surfThreshold: 0.1
-    edgeFeatureMinValidNum: 10
-    surfFeatureMinValidNum: 100
+    edgeFeatureMinValidNum: 1
+    surfFeatureMinValidNum: 0
 
     # voxel filter paprams
     odometrySurfLeafSize: 0.4                     # default: 0.4 - outdoor, 0.2 - indoor
@@ -84,11 +84,11 @@
     surroundingKeyframeSize: 50                   # submap size (when loop closure enabled)
     historyKeyframeSearchRadius: 15.0             # meters, key frame that is within n meters from
     # current pose will be considerd for loop closure
-    historyKeyframeSearchTimeDiff: 30.0           # seconds, key frame that is n seconds older will be
+    historyKeyframeSearchTimeDiff: 40.0           # seconds, key frame that is n seconds older will be
     # considered for loop closure
     historyKeyframeSearchNum: 25                  # number of hostory key frames will be fused into a
     # submap for loop closure
-    historyKeyframeFitnessScore: 0.03              # icp threshold, the smaller the better alignment
+    historyKeyframeFitnessScore: 0.05              # icp threshold, the smaller the better alignment
 
     # Visualization
     globalMapVisualizationSearchRadius: 1000.0    # meters, global map visualization radius
